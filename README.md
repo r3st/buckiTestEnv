@@ -12,8 +12,8 @@ curl -s https://raw.githubusercontent.com/r3st/buckiTestEnv/main/scripts/runBuck
 All URLs match local host
 
 ### [traefik](http://localhost:8081)
-### [prometheus](http://localhost:8080/prometheus)
+### [prometheus](http://localhost:8080/prometheus/graph)
 ### [bucki_exporter metrics](http://localhost:8080/bucki-exporter/metrics)
-### [buckiHelper app1](http://localhost:8080/app1)
-### [buckiHelper app2](http://localhost:8080/app2)
-### [buckiHelper app3](http://localhost:8080/app3)
+### [buckiHelper app1](http://localhost:8080/app1/)
+### [buckiHelper app2](http://localhost:8080/app2/)
+### [buckiHelper app3](http://localhost:8080/app3/)
