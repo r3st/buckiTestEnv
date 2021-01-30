@@ -73,7 +73,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app3.rule=PathPrefix(`/app3`)"
-      - "traefik.http.routers.app3.middlewares=app1-stripprefix"
+      - "traefik.http.routers.app3.middlewares=app3-stripprefix"
       - "traefik.http.middlewares.app3-stripprefix.stripprefix.prefixes=/app3"
     networks:
       - bucki-test-net
