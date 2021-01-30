@@ -1,0 +1,7 @@
+urls:
+  - name: app1
+    address: http://app1:8080/q/health
+  - name: app2
+    address: http://app2:8080/q/health
+  - name: app3
+    address: http://app3:8080/q/health

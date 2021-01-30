@@ -1,0 +1,82 @@
+version: '3.8'
+services:
+  traefik:
+    image: traefik:v2.4.0
+    ports:
+      - "8080:80"
+      - "8081:8080"
+    environment: 
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_API_INSECURE=true
+      - TRAEFIK_PROVIDERS_DOCKER_NETWORK=bucki-test-net
+        #- TRAEFIK_ENTRYPOINTS_FRONT=true
+        #- TRAEFIK_ENTRYPOINTS_FRONT_ADDRESS=80
+    networks:
+      - bucki-test-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    security_opt:
+      - label:type:docker_t
+  prometheus:
+    image: prom/prometheus:v2.24.1
+    expose:
+      - 9090
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=PathPrefix(`/prometheus`)"
+      - "traefik.http.routers.prometheus.middlewares=prometheus-stripprefix"
+      - "traefik.http.middlewares.prometheus-stripprefix.stripprefix.prefixes=/prometheus"
+    volumes:
+      - ${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - bucki-test-net
+  bucki-exporter:
+    image: r3st/bucki_exporter:0.0.1
+    expose:
+      - 9889
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bucki-exporter.rule=PathPrefix(`/bucki-exporter`)"
+      - "traefik.http.routers.bucki-exporter.middlewares=bucki-exporter-stripprefix"
+      - "traefik.http.middlewares.bucki-exporter-stripprefix.stripprefix.prefixes=/bucki-exporter"
+    volumes:
+      - ${PWD}/bucki.yml:/opt/bucki/configs/bucki.yml
+    networks:
+      - bucki-test-net
+  app1:
+    image: r3st/buckihelper:0.0.1
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app1.rule=PathPrefix(`/app1`)"
+      - "traefik.http.routers.app1.middlewares=app1-stripprefix"
+      - "traefik.http.middlewares.app1-stripprefix.stripprefix.prefixes=/app1"
+    networks:
+      - bucki-test-net
+  app2:
+    image: r3st/buckihelper:0.0.1
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app2.rule=PathPrefix(`/app2`)"
+      - "traefik.http.routers.app2.middlewares=app2-stripprefix"
+      - "traefik.http.middlewares.app2-stripprefix.stripprefix.prefixes=/app2"
+    networks:
+      - bucki-test-net
+  app3:
+    image: r3st/buckihelper:0.0.1
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app3.rule=PathPrefix(`/app3`)"
+      - "traefik.http.routers.app3.middlewares=app1-stripprefix"
+      - "traefik.http.middlewares.app3-stripprefix.stripprefix.prefixes=/app3"
+    networks:
+      - bucki-test-net
+networks:
+  bucki-test-net:
+    driver: bridge
