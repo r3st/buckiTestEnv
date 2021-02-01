@@ -31,6 +31,20 @@ services:
       - ${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - bucki-test-net
+  grafana:
+    image: grafana/grafana:7.3.7
+    expose:
+      - 3000 
+        #ports:
+        # - "8999:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=PathPrefix(`/grafana{regex:$$|/.*}`)"
+    volumes:
+      - ${PWD}/grafana/datasource_prometheus.yaml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - ${PWD}/grafana/custom.ini:/etc/grafana/grafana.ini
+    networks:
+      - bucki-test-net
   bucki-exporter:
     image: r3st/bucki_exporter:0.0.1
     expose:
